@@ -11,6 +11,11 @@ class AccesoController extends Controller
 {
 public function mostrarFormulario()
 {
+// Si ya hay sesión, redirigir según tipo de usuario
+if (Auth::check()) {
+return $this->redirigirSegunTipo();
+}
+
 return view('auth.acceso');
 }
 
@@ -40,14 +45,36 @@ $credentials = $request->only('email', 'password');
 if (Auth::attempt($credentials)) {
 $request->session()->regenerate();
 
+$usuario = Auth::user();
+
+// Verificar que el usuario tenga tipo asignado
+if (!$usuario->tipo) {
+Auth::logout();
+$request->session()->invalidate();
+$request->session()->regenerateToken();
+
+if ($request->ajax()) {
+return response()->json([
+'success' => false,
+'message' => 'El usuario no tiene un tipo asignado',
+], 401);
+}
+
+return redirect()->route('acceso')->withErrors([
+'email' => 'El usuario no tiene un tipo asignado',
+]);
+}
+
+// Redirigir según tipo de usuario
 if ($request->ajax()) {
 return response()->json([
 'success' => true,
 'message' => '¡Bienvenido!',
-'redirect' => route('acceso'), // Por ahora redirige a la misma página
+'redirect' => $this->obtenerUrlRedireccion(),
 ]);
 }
-return redirect()->intended(route('acceso'));
+
+return $this->redirigirSegunTipo();
 }
 
 // Credenciales incorrectas
@@ -70,5 +97,56 @@ $request->session()->invalidate();
 $request->session()->regenerateToken();
 
 return redirect()->route('acceso');
+}
+
+/**
+ * Redirige según el tipo de usuario conectado
+ */
+private function redirigirSegunTipo()
+{
+$usuario = Auth::user();
+$tipo = $usuario->tipo->tipo;
+
+switch ($tipo) {
+case 'admin':
+case 'profesor':
+return redirect()->route('usuarios.index');
+
+case 'estudiante':
+// La ruta materiasxusuario.index se crea en la Clase 5
+// Por ahora redirigimos a la raíz
+return redirect('/');
+
+default:
+// Tipo desconocido: cerrar sesión y mostrar error
+Auth::logout();
+request()->session()->invalidate();
+request()->session()->regenerateToken();
+
+return redirect()->route('acceso')->withErrors([
+'email' => 'Tipo de usuario no válido',
+]);
+}
+}
+
+/**
+ * Devuelve solo la URL de redirección (para respuestas JSON)
+ */
+private function obtenerUrlRedireccion()
+{
+$usuario = Auth::user();
+$tipo = $usuario->tipo->tipo;
+
+switch ($tipo) {
+case 'admin':
+case 'profesor':
+return route('usuarios.index');
+
+case 'estudiante':
+return url('/');
+
+default:
+return route('acceso');
+}
 }
 }
