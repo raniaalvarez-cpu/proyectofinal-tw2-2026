@@ -39,8 +39,7 @@
 </li>
 @endif
 <li class="nav-item">
-<a class="nav-link" href="#">
-<i class="bi bi-journal-bookmark"></i> Materias
+<a class="nav-link {{ request()->routeIs('materias.*') ? 'active fw-bold' : '' }}" href="{{ route('materias.index') }}"><i class="bi bi-journal-bookmark"></i> Materias
 </a>
 </li>
 </ul>
