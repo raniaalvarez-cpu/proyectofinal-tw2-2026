@@ -34,8 +34,7 @@
 </li>
 @if(Auth::user()->tipo->tipo === 'admin')
 <li class="nav-item">
-<a class="nav-link" href="#">
-<i class="bi bi-tags"></i> Tipos de Usuario
+<a class="nav-link {{ request()->routeIs('tipos.*') ? 'active fw-bold' : '' }}" href="{{ route('tipos.index') }}"><i class="bi bi-tags"></i> Tipos de Usuario
 </a>
 </li>
 @endif
