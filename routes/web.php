@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AccesoController;
 use App\Http\Controllers\Auth\UsuarioController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\MateriaController;
+use App\Http\Controllers\MateriasXUsuarioController;
 
 // Rutas públicas de autenticación
 Route::get('/', [AccesoController::class, 'mostrarFormulario'])->name('acceso');
@@ -24,4 +25,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('materias', MateriaController::class)->only([
         'index', 'create', 'store', 'edit', 'update', 'destroy'
     ]);
+    
+    // Materias por usuario
+    Route::get('materiasxusuario/{id}', [MateriasXUsuarioController::class, 'index'])->name('materiasxusuario.index');
+    Route::post('materiasxusuario/{id}/asignar', [MateriasXUsuarioController::class, 'asignar'])->name('materiasxusuario.asignar');
+    Route::delete('materiasxusuario/{asignacion_id}/desasignar', [MateriasXUsuarioController::class, 'desasignar'])->name('materiasxusuario.desasignar');
 });

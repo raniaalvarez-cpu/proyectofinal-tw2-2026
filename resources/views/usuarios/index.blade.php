@@ -120,12 +120,7 @@ form.submit();
 }
 
 function gestionarMaterias(id) {
-Swal.fire({
-icon: 'info',
-title: 'Gestión de Materias',
-text: 'Esta funcionalidad se implementará en la Clase 5.',
-confirmButtonText: 'Entendido'
-});
+window.location.href = '{{ url("materiasxusuario") }}/' + id;
 }
 </script>
 @endpush

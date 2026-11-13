@@ -50,14 +50,18 @@
 <span class="badge text-bg-light">{{ Auth::user()->tipo->tipo }}</span>
 </a>
 <ul class="dropdown-menu dropdown-menu-end">
-<li>
-<form action="{{ route('logout') }}" method="POST" id="frmLogout">
-@csrf
-<button type="submit" class="dropdown-item text-danger">
-<i class="bi bi-box-arrow-right"></i> Cerrar Sesión
-</button>
-</form>
-</li>
+    @if(Auth::user()->tipo->tipo === 'estudiante')
+    <li><a class="dropdown-item" href="{{ route('materiasxusuario.index', Auth::user()->id) }}"><i class="bi bi-journal-bookmark"></i> Mis Materias</a></li>
+    <li><hr class="dropdown-divider"></li>
+    @endif
+    <li>
+        <form action="{{ route('logout') }}" method="POST" id="frmLogout">
+            @csrf
+            <button type="submit" class="dropdown-item text-danger">
+                <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+            </button>
+        </form>
+    </li>
 </ul>
 </li>
 </ul>
