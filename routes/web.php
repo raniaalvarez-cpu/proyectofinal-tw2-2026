@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\UsuarioController;
 use App\Http\Controllers\TipoController;
 use App\Http\Controllers\MateriaController;
 use App\Http\Controllers\MateriasXUsuarioController;
+use App\Http\Controllers\CalificacionController;
 
 // Rutas públicas de autenticación
 Route::get('/', [AccesoController::class, 'mostrarFormulario'])->name('acceso');
@@ -30,4 +31,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('materiasxusuario/{id}', [MateriasXUsuarioController::class, 'index'])->name('materiasxusuario.index');
     Route::post('materiasxusuario/{id}/asignar', [MateriasXUsuarioController::class, 'asignar'])->name('materiasxusuario.asignar');
     Route::delete('materiasxusuario/{asignacion_id}/desasignar', [MateriasXUsuarioController::class, 'desasignar'])->name('materiasxusuario.desasignar');
+    
+    // Calificaciones
+    Route::get('materiasxusuario/{usuario_id}/materia/{materia_id}/calificaciones', [CalificacionController::class, 'index'])->name('calificaciones.index');
+    Route::post('materiasxusuario/{usuario_id}/materia/{materia_id}/calificaciones', [CalificacionController::class, 'store'])->name('calificaciones.store');
+    Route::put('calificaciones/{id}', [CalificacionController::class, 'update'])->name('calificaciones.update');
+    Route::delete('calificaciones/{id}', [CalificacionController::class, 'destroy'])->name('calificaciones.destroy');
 });
